@@ -1,0 +1,10 @@
+/backend/target/
+/app/venv-win/
+/__pycache__/
+/*.pyc
+/autovoice_port.txt
+/autovoice_kill.txt
+/autovoice_jobs.json
+/autovoice_results.json
+/*.bak
+__pycache__/
