@@ -1,0 +1,46 @@
+Build Checklist
+===============
+
+Prerequisites (one-time setup)
+-------------------------------
+1. Install Python 3.12 for Windows (if not already)
+2. Install Rust for Windows (rustup.exe)
+3. Install Inno Setup 6: https://jrsoftware.org/isinfo.php
+4. Install Git for Windows (optional but recommended)
+
+Create/update the venv with PyInstaller:
+   cd C:\Users\omen1\Desktop\autoVoice\app
+   python -m venv venv-win
+   venv-win\Scripts\pip install -r requirements.txt
+   venv-win\Scripts\pip install pyinstaller
+
+Build Steps
+-----------
+Open Windows CMD or PowerShell (NOT WSL):
+
+Step 1: Build Rust backend
+   cd C:\Users\omen1\Desktop\autoVoice\backend
+   cargo build --release
+
+Step 2: Build Python frontend
+   cd C:\Users\omen1\Desktop\autoVoice\app
+   venv-win\Scripts\pyinstaller.exe autovoice.spec --noconfirm
+
+Step 3: Build installer
+   "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" C:\Users\omen1\Desktop\autoVoice\installer\autovoice.iss
+
+Or run the build script:
+   cd C:\Users\omen1\Desktop\autoVoice
+   build.bat
+
+Output
+------
+installer_output\AutoVoice_Setup_0.1.0.exe
+
+Test
+----
+1. Run the installer on a clean Windows machine
+2. Check that AutoVoice appears in Start Menu
+3. Open DaVinci Resolve, go to Script menu, run AutoVoice
+4. Verify backend + frontend start
+5. Load an SRT file and generate voiceover

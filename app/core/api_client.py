@@ -1,3 +1,4 @@
+import sys
 import os
 import json
 import time
@@ -9,16 +10,18 @@ from core.models import Voice, TtsJob
 
 BACKEND_URL = "http://127.0.0.1:56133"
 LUA_PORT = 56132
-_PROJECT_DIR = Path(r"C:\Users\omen1\Desktop\autoVoice")
+
+if getattr(sys, 'frozen', False):
+    _PROJECT_DIR = Path(sys.executable).parent
+else:
+    _PROJECT_DIR = Path(__file__).resolve().parent.parent.parent
+
 _JOBS_FILE = _PROJECT_DIR / "autovoice_jobs.json"
 _RESULTS_FILE = _PROJECT_DIR / "autovoice_results.json"
 
 
 def _get_lua_url() -> str:
-    port_file = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-        "autovoice_port.txt",
-    )
+    port_file = str(_PROJECT_DIR / "autovoice_port.txt")
     try:
         with open(port_file, "r") as f:
             port = int(f.read().strip())

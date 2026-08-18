@@ -1,0 +1,55 @@
+AutoVoice - Project Roadmap & Versioning
+=========================================
+
+Version Numbering (SemVer)
+--------------------------
+0.1.0 - First release (current)
+0.1.x - Bugfixes only
+0.2.0 - New feature (e.g. ElevenLabs support)
+1.0.0 - Stable, feature-complete
+
+Version Locations
+-----------------
+- backend/Cargo.toml        -> version = "x.y.z"
+- installer/autovoice.iss   -> #define MyAppVersion "x.y.z"
+
+Release Process
+---------------
+1. Update version in both locations
+2. Run: cd backend && cargo update
+3. Commit: git add -A && git commit -m "v0.2.0: description"
+4. Tag: git tag v0.2.0
+5. Build: build.bat
+6. GitHub release: gh release create v0.2.0 installer_output/AutoVoice_Setup_x.y.z.exe
+
+v0.1.0 (Current - Ship as-is)
+------------------------------
+- Rust backend with Edge TTS (free, Microsoft neural voices)
+- Python GUI (PyInstaller exe) for subtitle loading and voice settings
+- Lua server inside DaVinci Resolve for timeline integration
+- Inno Setup installer
+
+v0.2.0 (Next Version)
+----------------------
+- Add tts/mod.rs trait so TTS providers are pluggable
+- Add tts/elevenlabs.rs (paid, broadcast-quality voices)
+- Add tts/openai.rs (paid, natural voices)
+- Add "Provider" dropdown in Python GUI
+- Ship with both Edge TTS (free) and ElevenLabs/OpenAI (paid)
+- Pass API keys from GUI to backend
+
+v0.3.0 (Future Ideas)
+----------------------
+- Local TTS models (Coqui, Bark, F5-TTS) - requires GPU
+- Voice cloning support (upload reference audio)
+- Batch SRT processing (multiple files)
+- Custom voice training
+- Audio post-processing (noise reduction, EQ)
+
+Architecture Notes
+------------------
+- Backend: Axum + Tokio, handles all TTS and audio file management
+- Frontend: PySide6 GUI, orchestrates TTS requests and Resolve integration
+- Lua: HTTP server inside Resolve, bridges Python to Resolve API
+- All TTS currently flows through the Rust backend via edge-tts-rust crate
+- Edge TTS connects to Microsoft's WebSocket - no model runs locally

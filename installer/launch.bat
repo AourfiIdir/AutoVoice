@@ -15,16 +15,9 @@ start "AutoVoice Backend" /min cmd /c "cd backend && autovoice-server.exe"
 echo Waiting for backend to start...
 timeout /t 5 /nobreak >nul
 
-:: Start Python frontend
+:: Start Python frontend (single exe)
 echo Starting frontend...
-cd app
-if exist venv-win\Scripts\python.exe (
-    venv-win\Scripts\python.exe main.py
-) else (
-    echo ERROR: Python virtual environment not found.
-    echo Run: cd app ^&^& python -m venv venv ^&^& venv\Scripts\pip install -r requirements.txt
-    pause
-)
+AutoVoice.exe
 
 :: Kill backend when frontend closes
 taskkill /fi "WindowTitle eq AutoVoice Backend" /t /f >nul 2>&1

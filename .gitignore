@@ -1,10 +1,16 @@
 /backend/target/
+/app/venv/
 /app/venv-win/
+/app/build/
+/app/dist/
+/app/*.spec.bak
 /__pycache__/
+/**/__pycache__/
 /*.pyc
 /autovoice_port.txt
 /autovoice_kill.txt
 /autovoice_jobs.json
 /autovoice_results.json
+/installer_output/
+/dist/
 /*.bak
-__pycache__/

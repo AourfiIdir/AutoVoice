@@ -523,10 +523,9 @@ end
 
 
 local function launch_frontend()
-    local python = PROJECT_DIR .. "\\app\\venv-win\\Scripts\\python.exe"
-    local script = PROJECT_DIR .. "\\app\\main.py"
-    log("Frontend: " .. script)
-    os.execute('start "" "' .. python .. '" "' .. script .. '"')
+    local exe = PROJECT_DIR .. "\\AutoVoice.exe"
+    log("Frontend: " .. exe)
+    os.execute('start "" "' .. exe .. '"')
 end
 
 
