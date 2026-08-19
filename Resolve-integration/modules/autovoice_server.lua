@@ -523,9 +523,18 @@ end
 
 
 local function launch_frontend()
-    local exe = PROJECT_DIR .. "\\AutoVoice.exe"
-    log("Frontend: " .. exe)
-    os.execute('start "" "' .. exe .. '"')
+    local installed = PROJECT_DIR .. "\\AutoVoice.exe"
+    local dev_python = PROJECT_DIR .. "\\app\\venv-win\\Scripts\\python.exe"
+    local dev_script = PROJECT_DIR .. "\\app\\main.py"
+    local f = io.open(installed, "r")
+    if f then
+        f:close()
+        log("Frontend: " .. installed)
+        os.execute('start "" "' .. installed .. '"')
+    else
+        log("Frontend: " .. dev_script)
+        os.execute('start "" "' .. dev_python .. '" "' .. dev_script .. '"')
+    end
 end
 
 

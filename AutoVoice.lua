@@ -11,7 +11,7 @@ local PROJECT_DIR =
 
 local SERVER_SCRIPT =
     PROJECT_DIR ..
-    "\\Resolve-integration\\modules\\autovoice_server.lua"
+    "\\modules\\autovoice_server.lua"
 
 print("[AutoVoice] Loading server from: " .. SERVER_SCRIPT)
 

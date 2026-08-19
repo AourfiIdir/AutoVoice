@@ -12,7 +12,7 @@ AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
-DefaultDirName={autopf}\{#MyAppName}
+DefaultDirName={localappdata}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 OutputDir=..\installer_output
 OutputBaseFilename=AutoVoice_Setup_{#MyAppVersion}
@@ -44,11 +44,11 @@ Source: "..\AutoVoice.lua"; DestDir: "{app}"; Flags: ignoreversion
 Source: "launch.bat"; DestDir: "{app}"; Flags: ignoreversion
 
 ; Resolve scripts (per-user, in Fusion\Scripts\Utility so it appears in Script menu)
-Source: "..\AutoVoice.lua"; DestDir: "{localappdata}\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Utility"; Flags: ignoreversion
+Source: "..\AutoVoice.lua"; DestDir: "{userappdata}\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Utility"; Flags: ignoreversion
 
 [Code]
 const
-  ResolvePath = '{localappdata}\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Utility';
+  ResolvePath = '{userappdata}\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Utility';
 
 procedure RewriteLuaPathsInFile(FilePath: String; InstallDir: String);
 var

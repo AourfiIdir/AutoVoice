@@ -46,12 +46,13 @@ Communication between the Python frontend and the Lua bridge uses **file-based I
 Prototype / Work in Progress.
 
 - [x] Rust TTS backend with batch generation
-- [x] Python/PyQt frontend with voice selector
+- [x] Python/PySide6 frontend with voice selector
 - [x] SRT parser with timeline-aware FPS
 - [x] Lua bridge for Resolve integration
 - [x] File-based IPC (stable communication)
 - [x] Automatic audio track creation
-- [ ] Installer / executable packaging
+- [x] PyInstaller single-exe packaging
+- [x] Inno Setup installer
 - [ ] Subtitle duration sync
 - [ ] Real-time preview
 - [ ] Multi-language support
@@ -70,6 +71,8 @@ AutoVoice/
 │   │   ├── voice_selector.py     # Voice picker widget
 │   │   └── subtitle_view.py      # Subtitle table widget
 │   ├── main.py                   # Entry point
+│   ├── autovoice.spec            # PyInstaller spec
+│   ├── requirements.txt          # Python dependencies
 │   └── venv-win/                 # Windows Python venv
 ├── backend/                      # Rust TTS backend
 │   ├── src/
@@ -85,8 +88,12 @@ AutoVoice/
 │       ├── ljsocket.lua          # TCP socket library
 │       └── dkjson.lua            # JSON library
 ├── installer/                    # Inno Setup scripts
+│   ├── autovoice.iss             # Installer script
+│   └── launch.bat                # Launcher for installed app
 ├── AutoVoice.lua                 # Resolve script entry point
-└── ARCHITECTURE.md               # Detailed architecture docs
+├── build.bat                     # Build all (backend + frontend + installer)
+├── ROADMAP.txt                   # Versioning and roadmap
+└── README.md
 ```
 
 ## Setup
@@ -94,37 +101,80 @@ AutoVoice/
 ### Prerequisites
 
 - **DaVinci Resolve** (Studio or Free)
-- **Rust** toolchain (for building the backend)
-- **Python 3.12+** with pip
+- **Rust** toolchain ([rustup.rs](https://rustup.rs))
+- **Python 3.12+** ([python.org](https://python.org))
+- **Inno Setup 6** ([jrsoftware.org](https://jrsoftware.org/isdl.php))
+- **Git** (optional)
 
-### Backend
+### Build from Source (Windows)
+
+All commands run in **Windows CMD or PowerShell** (not WSL).
+
+#### 1. Build the Rust backend
 
 ```bash
 cd backend
 cargo build --release
 ```
 
-The binary will be at `backend/target/release/autovoice-server.exe`.
+Output: `backend/target/release/autovoice-server.exe`
 
-### Frontend
+#### 2. Set up the Python frontend
 
 ```bash
 cd app
 python -m venv venv-win
-venv-win\Scripts\activate
-pip install PySide6 httpx
+venv-win\Scripts\pip install -r requirements.txt
+venv-win\Scripts\pip install pyinstaller
+```
+
+#### 3. Build the Python exe with PyInstaller
+
+```bash
+cd app
+venv-win\Scripts\pyinstaller.exe autovoice.spec --noconfirm
+```
+
+Output: `app/dist/AutoVoice.exe`
+
+#### 4. Build the installer with Inno Setup
+
+```bash
+"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer\autovoice.iss
+```
+
+Or use the build script for all steps at once:
+
+```bash
+build.bat
+```
+
+Output: `installer_output/AutoVoice_Setup_0.1.0.exe`
+
+### What Gets Installed
+
+```
+%LOCALAPPDATA%\AutoVoice\
+├── AutoVoice.exe            # Python GUI (PyInstaller)
+├── AutoVoice.lua            # Lua launcher
+├── launch.bat               # Starts backend + frontend
+├── backend\
+│   └── autovoice-server.exe # Rust TTS backend
+└── modules\
+    ├── autovoice_server.lua # Lua HTTP server for Resolve
+    ├── ljsocket.lua         # TCP socket library
+    └── dkjson.lua           # JSON library
+
+%APPDATA%\...\Fusion\Scripts\Utility\
+└── AutoVoice.lua            # Launcher (appears in Resolve Script menu)
 ```
 
 ### Resolve Integration
 
-1. Copy `AutoVoice.lua` to:
-   ```
-   %APPDATA%\Blackmagic Design\DaVinci Resolve\Support\Fusion\Scripts\Utility\
-   ```
+1. Run the installer — it automatically places `AutoVoice.lua` in Resolve's Script Utility folder
+2. Open DaVinci Resolve → Script menu → click **AutoVoice**
 
-2. Open DaVinci Resolve → Workspace → Console → Run `AutoVoice`
-
-   This starts the backend, frontend, and Lua server automatically.
+If the script doesn't appear, restart Resolve.
 
 ## Usage
 
@@ -142,6 +192,7 @@ pip install PySide6 httpx
 - **Python** — PySide6, httpx
 - **Lua** — ljsocket (TCP), dkjson (JSON)
 - **TTS** — Microsoft Edge TTS (free, 400+ voices)
+- **Packaging** — PyInstaller, Inno Setup
 
 ## License
 
