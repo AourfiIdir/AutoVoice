@@ -4,6 +4,12 @@ AI Voice-over Generator for DaVinci Resolve.
 
 Load an SRT subtitle file, pick a voice, and AutoVoice generates TTS audio for each subtitle and places it on your timeline — all from within Resolve.
 
+<img width="1892" height="1414" alt="Capture d’écran 2026-08-18 225637" src="https://github.com/user-attachments/assets/fd1f2bda-5414-4bad-bcfb-1298c1012ead" />
+
+Tips for improving the software :)
+
+<a href='https://ko-fi.com/O8E325CVRX' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
 ## Architecture
 
 ```
@@ -31,6 +37,12 @@ Load an SRT subtitle file, pick a voice, and AutoVoice generates TTS audio for e
 
 Communication between the Python frontend and the Lua bridge uses **file-based IPC** (`autovoice_jobs.json` / `autovoice_results.json`) to avoid socket stability issues inside Resolve's scripting environment.
 
+## Download
+
+| Platform | Installer |
+|---|---|
+| 🪟 Windows | [AutoSubs-windows-x86_64.exe](https://github.com/tmoroney/auto-subs/releases/latest/download/AutoSubs-windows-x86_64.exe) |
+
 ## Features
 
 - 400+ voices via Edge TTS (free, no API key)
@@ -56,45 +68,6 @@ Prototype / Work in Progress.
 - [ ] Subtitle duration sync
 - [ ] Real-time preview
 - [ ] Multi-language support
-
-## Project Structure
-
-```
-AutoVoice/
-├── app/                          # Python frontend
-│   ├── core/
-│   │   ├── api_client.py         # HTTP + file-based IPC client
-│   │   ├── models.py             # Data models
-│   │   └── srt_parser.py         # SRT file parser
-│   ├── ui/
-│   │   ├── main_window.py        # Main window + generation worker
-│   │   ├── voice_selector.py     # Voice picker widget
-│   │   └── subtitle_view.py      # Subtitle table widget
-│   ├── main.py                   # Entry point
-│   ├── autovoice.spec            # PyInstaller spec
-│   ├── requirements.txt          # Python dependencies
-│   └── venv-win/                 # Windows Python venv
-├── backend/                      # Rust TTS backend
-│   ├── src/
-│   │   ├── main.rs               # Axum server entry
-│   │   ├── api/routes.rs         # HTTP handlers
-│   │   ├── audio/convert.rs      # Audio file management
-│   │   ├── config.rs             # Configuration
-│   │   └── tts/edge.rs           # Edge TTS integration
-│   └── Cargo.toml
-├── Resolve-integration/          # DaVinci Resolve scripts
-│   └── modules/
-│       ├── autovoice_server.lua  # TCP server + Resolve API bridge
-│       ├── ljsocket.lua          # TCP socket library
-│       └── dkjson.lua            # JSON library
-├── installer/                    # Inno Setup scripts
-│   ├── autovoice.iss             # Installer script
-│   └── launch.bat                # Launcher for installed app
-├── AutoVoice.lua                 # Resolve script entry point
-├── build.bat                     # Build all (backend + frontend + installer)
-├── ROADMAP.txt                   # Versioning and roadmap
-└── README.md
-```
 
 ## Setup
 
