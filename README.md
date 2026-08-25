@@ -103,7 +103,6 @@ AutoVoice/
 - **DaVinci Resolve** (Studio or Free)
 - **Rust** toolchain ([rustup.rs](https://rustup.rs))
 - **Python 3.12+** ([python.org](https://python.org))
-- **Inno Setup 6** ([jrsoftware.org](https://jrsoftware.org/isdl.php))
 - **Git** (optional)
 
 ### Build from Source (Windows)
