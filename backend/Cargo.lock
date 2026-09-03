@@ -150,6 +150,7 @@ dependencies = [
  "anyhow",
  "axum",
  "edge-tts-rust",
+ "reqwest",
  "serde",
  "serde_json",
  "tokio",

@@ -15,6 +15,7 @@ if errorlevel 1 (
     echo ERROR: Rust build failed.
     exit /b 1
 )
+copy /Y target\release\autovoice-server.exe autovoice-server.exe >nul
 cd ..
 
 :: 2. Build Python frontend with PyInstaller
@@ -25,7 +26,7 @@ if not exist venv-win\Scripts\python.exe (
     echo   cd app ^&^& python -m venv venv-win ^&^& venv-win\Scripts\pip install -r requirements.txt ^&^& venv-win\Scripts\pip install pyinstaller
     exit /b 1
 )
-venv-win\Scripts\pyinstaller.exe autovoice.spec --noconfirm
+venv-win\Scripts\python.exe -m PyInstaller .\autovoice.spec --noconfirm
 if errorlevel 1 (
     echo ERROR: PyInstaller build failed.
     exit /b 1

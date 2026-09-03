@@ -85,7 +85,8 @@ class VoiceSelector(QWidget):
         self.voice_combo.clear()
         for v in voices:
             label = v.name if v.name else v.short_name
-            self.voice_combo.addItem(f"{label} ({v.gender})", v.short_name)
+            gender = f" ({v.gender})" if v.gender else ""
+            self.voice_combo.addItem(f"{label}{gender}", v.short_name)
         self.voice_combo.blockSignals(False)
         self._on_setting_changed()
 

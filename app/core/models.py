@@ -48,3 +48,21 @@ class GenerateSettings:
     rate: str = "+0%"
     volume: str = "+0%"
     pitch: str = "+0Hz"
+
+
+@dataclass
+class TtsConfig:
+    provider: str = "edge"
+    openai_api_key: str = ""
+    openai_model: str = "gpt-4o-mini-tts"
+    elevenlabs_api_key: str = ""
+    elevenlabs_model: str = "eleven_multilingual_v2"
+
+    def to_dict(self) -> dict:
+        return {
+            "provider": self.provider,
+            "openai_api_key": self.openai_api_key,
+            "openai_model": self.openai_model,
+            "elevenlabs_api_key": self.elevenlabs_api_key,
+            "elevenlabs_model": self.elevenlabs_model,
+        }
