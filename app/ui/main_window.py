@@ -11,6 +11,7 @@ from core.srt_parser import parse_srt
 from core import api_client
 from ui.voice_selector import VoiceSelector
 from ui.subtitle_view import SubtitleView
+from ui.settings_dialog import SettingsDialog
 
 
 class VoicesLoader(QThread):
@@ -127,6 +128,10 @@ class MainWindow(QMainWindow):
         self.progress_label = QLabel("")
         bottom_bar.addWidget(self.progress_label)
 
+        self.settings_btn = QPushButton("TTS Settings")
+        self.settings_btn.clicked.connect(self._on_open_settings)
+        bottom_bar.addWidget(self.settings_btn)
+
         main_layout.addLayout(bottom_bar)
 
         self.statusBar().showMessage("Ready")
@@ -156,6 +161,13 @@ class MainWindow(QMainWindow):
         self._voices_loader.finished.connect(self._on_voices_loaded)
         self._voices_loader.error.connect(self._on_voices_error)
         self._voices_loader.start()
+
+    def _on_open_settings(self):
+        dialog = SettingsDialog(self)
+        dialog.load()
+        if dialog.exec() == dialog.DialogCode.Accepted:
+            self.statusBar().showMessage("TTS settings saved")
+            self._load_voices()
 
     @Slot(list)
     def _on_voices_loaded(self, voices):

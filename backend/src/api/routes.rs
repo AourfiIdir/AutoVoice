@@ -6,7 +6,8 @@ use axum::{
 use serde::{Deserialize, Serialize};
 
 use crate::audio::convert::AudioManager;
-use crate::tts::edge::{SynthesizeRequest, TtsEngine};
+use crate::config::TtsConfig;
+use crate::tts::{SynthesizeRequest, VoiceInfo};
 use crate::AppState;
 
 #[derive(Serialize)]
@@ -24,10 +25,25 @@ pub async fn health() -> Json<HealthResponse> {
     })
 }
 
-pub async fn list_voices() -> Result<Json<Vec<crate::tts::edge::VoiceInfo>>, (StatusCode, String)> {
-    TtsEngine::list_voices()
+pub async fn list_voices(
+    State((tts, _)): State<AppState>,
+) -> Result<Json<Vec<VoiceInfo>>, (StatusCode, String)> {
+    tts.list_voices()
         .await
         .map(Json)
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))
+}
+
+pub async fn get_config(State((tts, _)): State<AppState>) -> Json<TtsConfig> {
+    Json(tts.get_config())
+}
+
+pub async fn set_config(
+    State((tts, _)): State<AppState>,
+    Json(config): Json<TtsConfig>,
+) -> Result<Json<TtsConfig>, (StatusCode, String)> {
+    tts.set_config(config)
+        .map(|_| Json(tts.get_config()))
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))
 }
 

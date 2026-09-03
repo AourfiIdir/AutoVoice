@@ -12,7 +12,7 @@ use tracing_subscriber::EnvFilter;
 use crate::api::routes;
 use crate::audio::convert::AudioManager;
 use crate::config::Config;
-use crate::tts::edge::TtsEngine;
+use crate::tts::TtsEngine;
 
 pub type AppState = (Arc<TtsEngine>, Arc<AudioManager>);
 
@@ -24,12 +24,13 @@ async fn main() -> anyhow::Result<()> {
         )
         .init();
 
-    let config = Config::default();
-    let tts = Arc::new(TtsEngine::new()?);
+    let config = Config::load();
+    let tts = Arc::new(TtsEngine::new(config.config_path().to_path_buf()));
     let audio = Arc::new(AudioManager::new(&config.audio_dir)?);
 
     tracing::info!("AutoVoice backend starting on port {}", config.backend_port);
-
+    tracing::info!("TTS provider: {}", config.tts.provider);
+    tracing::info!("Backend version: {}",config.backend_version);
     let cors = CorsLayer::new()
         .allow_origin(Any)
         .allow_methods(Any)
@@ -38,6 +39,7 @@ async fn main() -> anyhow::Result<()> {
     let app = Router::new()
         .route("/health", get(routes::health))
         .route("/voices", get(routes::list_voices))
+        .route("/config", get(routes::get_config).put(routes::set_config))
         .route("/generate", post(routes::generate))
         .route("/generate-batch", post(routes::generate_batch))
         .route("/audio/{id}", get(routes::get_audio))

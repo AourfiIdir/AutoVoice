@@ -14,3 +14,4 @@
 /installer_output/
 /dist/
 /*.bak
+/Resolve-integration/modules/resolve_api_reference.lua

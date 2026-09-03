@@ -20,6 +20,7 @@ a = Analysis(
         'ui.main_window',
         'ui.voice_selector',
         'ui.subtitle_view',
+        'ui.settings_dialog',
     ],
     hookspath=[],
     hooksconfig={},

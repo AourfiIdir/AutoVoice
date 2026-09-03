@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 import httpx
 from typing import Optional
-from core.models import Voice, TtsJob
+from core.models import TtsConfig, Voice, TtsJob
 
 
 BACKEND_URL = "http://127.0.0.1:56133"
@@ -54,9 +54,47 @@ def check_resolve() -> str | None:
         return None
 
 
+def get_tts_config() -> TtsConfig:
+    r = httpx.get(f"{BACKEND_URL}/config", timeout=5.0)
+    _raise_with_body(r)
+    data = r.json()
+    return TtsConfig(
+        provider=data.get("provider", "edge"),
+        openai_api_key=data.get("openai_api_key", ""),
+        openai_model=data.get("openai_model", "gpt-4o-mini-tts"),
+        elevenlabs_api_key=data.get("elevenlabs_api_key", ""),
+        elevenlabs_model=data.get("elevenlabs_model", "eleven_multilingual_v2"),
+    )
+
+
+def set_tts_config(cfg: TtsConfig) -> TtsConfig:
+    r = httpx.put(f"{BACKEND_URL}/config", json=cfg.to_dict(), timeout=5.0)
+    _raise_with_body(r)
+    return get_tts_config()
+
+
+def _raise_with_body(r) -> None:
+    """Raise, carrying the backend's error message in the exception text."""
+    try:
+        r.raise_for_status()
+    except httpx.HTTPStatusError as exc:
+        body = exc.response.text or ""
+        detail = ""
+        try:
+            detail = exc.response.json().get("error", "")
+        except Exception:
+            pass
+        message = detail or body.strip() or str(exc)
+        raise httpx.HTTPStatusError(
+            message=f"{exc.response.status_code}: {message}",
+            request=exc.request,
+            response=exc.response,
+        ) from None
+
+
 def get_voices() -> list[Voice]:
     r = httpx.get(f"{BACKEND_URL}/voices", timeout=15.0)
-    r.raise_for_status()
+    _raise_with_body(r)
     voices = []
     for v in r.json():
         voices.append(Voice(
@@ -86,7 +124,7 @@ def generate_tts(
         },
         timeout=60.0,
     )
-    r.raise_for_status()
+    _raise_with_body(r)
     return r.json()
 
 
@@ -110,7 +148,7 @@ def generate_batch(jobs: list[TtsJob], segments_data: list[dict] = None) -> list
         json=body,
         timeout=300.0,
     )
-    r.raise_for_status()
+    _raise_with_body(r)
     return r.json()["results"]
 
 
